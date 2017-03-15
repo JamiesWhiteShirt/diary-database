@@ -1,0 +1,13 @@
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'application'
+
+mainClassName = "diary.Application"
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	compile 'org.xerial:sqlite-jdbc:3.16.1'
+}
