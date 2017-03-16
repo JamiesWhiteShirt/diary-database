@@ -116,3 +116,14 @@ CREATE TABLE IF NOT EXISTS gps_info(
 		ON DELETE CASCADE
 );
 
+CREATE TABLE IF NOT EXISTS goal_period(
+    id              INTEGER         PRIMARY KEY AUTOINCREMENT,
+    workout_name    VARCHAR(50)     NOT NULL,
+    from_time       DATETIME        NOT NULL,
+    to_time         DATETIME        NOT NULL,
+    description     TEXT            NOT NULL,
+    FOREIGN KEY (workout_name)
+        REFERENCES workout(name)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+);
