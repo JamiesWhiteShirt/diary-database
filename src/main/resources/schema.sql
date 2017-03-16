@@ -1,13 +1,9 @@
 CREATE TABLE IF NOT EXISTS completed_workout(
-	id					INT			PRIMARY KEY,
-	workout_type_name	VARCHAR(50)	NOT NULL,
+	id					INTEGER		PRIMARY KEY AUTOINCREMENT,
 	time				DATETIME	NOT NULL,
 	duration			INT			NOT NULL,
 	performance_rating	INT,
-	notes				TEXT,
-	FOREIGN KEY (workout_type_name)
-		REFERENCES workout_type(name)
-		ON UPDATE CASCADE
+	notes				TEXT
 );
 
 CREATE TABLE IF NOT EXISTS outdoor_completed_workout(
