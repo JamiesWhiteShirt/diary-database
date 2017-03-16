@@ -1,8 +1,3 @@
-CREATE TABLE IF NOT EXISTS workout_type(
-	name		VARCHAR(50)		PRIMARY KEY,
-	description	VARCHAR(500)	NOT NULL
-);
-
 CREATE TABLE IF NOT EXISTS completed_workout(
 	id					INT			PRIMARY KEY,
 	workout_type_name	VARCHAR(50)	NOT NULL,
@@ -35,36 +30,60 @@ CREATE TABLE IF NOT EXISTS indoor_completed_workout(
 		ON DELETE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS exercise(
-	id						INT		NOT NULL,
-	completed_workout_id	INT 	NOT NULL,
-	PRIMARY KEY (id, completed_workout_id),
-	FOREIGN KEY (completed_workout_id)
-		REFERENCES completed_workout(id)
+CREATE TABLE IF NOT EXISTS exercise_replaceable_by(
+	exercise_name_a		VARCHAR(50)		NOT NULL,
+	exercise_name_b		VARCHAR(50)		NOT NULL,
+	PRIMARY KEY (exercise_name_a, exercise_name_b),
+	FOREIGN KEY (exercise_name_a)
+		REFERENCES exercise(name)
 		ON UPDATE CASCADE
-);
-
-CREATE TABLE IF NOT EXISTS repetition_exercise(
-	exercise_id				INT		NOT NULL,
-	completed_workout_id	INT		NOT NULL,
-	load					INT		NOT NULL,
-	reps					INT		NOT NULL,
-	sets					INT		NOT NULL,
-	PRIMARY KEY (exercise_id, completed_workout_id),
-	FOREIGN KEY (exercise_id, completed_workout_id)
-		REFERENCES exercise(exercise_id, completed_workout_id)
+		ON DELETE CASCADE,
+	FOREIGN KEY (exercise_name_b)
+		REFERENCES exercise(name)
 		ON UPDATE CASCADE
 		ON DELETE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS endurance_exercise(
-	exercise_id				INT		NOT NULL,
+CREATE TABLE IF NOT EXISTS exercise(
+	name			VARCHAR(50)		PRIMARY KEY,
+	description		TEXT			NOT NULL,
+	type			VARCHAR(50)		NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS completed_exercise(
+	id						INT				NOT NULL,
+	completed_workout_id	INT 			NOT NULL,
+	exercise_name			VARCHAR(50)		NOT NULL,
+	PRIMARY KEY (id, completed_workout_id),
+	FOREIGN KEY (completed_workout_id)
+		REFERENCES completed_workout(id)
+		ON UPDATE CASCADE,
+	FOREIGN KEY (exercise_name)
+		REFERENCES exercise(name)
+		ON UPDATE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS repetition_exercise(
+	completed_exercise_id	INT		NOT NULL,
+	completed_workout_id	INT		NOT NULL,
+	load					INT		NOT NULL,
+	reps					INT		NOT NULL,
+	sets					INT		NOT NULL,
+	PRIMARY KEY (completed_exercise_id, completed_workout_id),
+	FOREIGN KEY (completed_exercise_id, completed_workout_id)
+		REFERENCES completed_exercise(id, completed_workout_id)
+		ON UPDATE CASCADE
+		ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS endurance_completed_exercise(
+	completed_exercise_id	INT		NOT NULL,
 	completed_workout_id	INT		NOT NULL,
 	length					INT,
 	duration				INT,
-	PRIMARY KEY (exercise_id, completed_workout_id),
-	FOREIGN KEY (exercise_id, completed_workout_id)
-		REFERENCES exercise(exercise_id, completed_workout_id)
+	PRIMARY KEY (completed_exercise_id, completed_workout_id),
+	FOREIGN KEY (completed_exercise_id, completed_workout_id)
+		REFERENCES completed_exercise(id, completed_workout_id)
 		ON UPDATE CASCADE
 		ON DELETE CASCADE
 );
@@ -83,15 +102,31 @@ CREATE TABLE IF NOT EXISTS minor_group(
 );
 
 CREATE TABLE IF NOT EXISTS exercise_group(
-	exercise_id			INT				NOT NULL,
+	exercise_name		VARCHAR(50)		NOT NULL,
 	minor_group_name	VARCHAR(50)		NOT NULL,
 	major_group_name	VARCHAR(50)		NOT NULL,
-	PRIMARY KEY (exercise_id, minor_group_name, major_group_name),
-	FOREIGN KEY (exercise_id)
-		REFERENCES exercise(id)
-		ON UPDATE CASCADE,
+	PRIMARY KEY (exercise_name, minor_group_name, major_group_name),
+	FOREIGN KEY (exercise_name)
+		REFERENCES exercise(name)
+		ON UPDATE CASCADE
+		ON DELETE CASCADE,
 	FOREIGN KEY (minor_group_name, major_group_name)
 		REFERENCES minor_group(id, major_group_id)
 		ON UPDATE CASCADE
+		ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS gps_info(
+	id						INT		NOT NULL,
+	completed_workout_id	INT		NOT NULL,
+	pulse					INT		NOT NULL,
+	longitude				DOUBLE	NOT NULL,
+	latitude				DOUBLE	NOT NULL,
+	altitude				DOUBLE	NOT NULL,
+	PRIMARY KEY (id, completed_workout_id),
+	FOREIGN KEY (completed_workout_id)
+		REFERENCES completed_workout(id)
+		ON UPDATE CASCADE
+		ON DELETE CASCADE
 );
 
