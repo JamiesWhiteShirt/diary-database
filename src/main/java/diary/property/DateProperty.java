@@ -4,7 +4,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class DateProperty extends Property {
+public class DateProperty extends Property<Date> {
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm");
 
     private Date value;
@@ -14,10 +14,12 @@ public class DateProperty extends Property {
         this.value = value;
     }
 
+    @Override
     public Date getValue() {
         return value;
     }
 
+    @Override
     public void setValue(Date value) {
         this.value = value;
     }

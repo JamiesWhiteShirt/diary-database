@@ -4,18 +4,13 @@ import diary.commandcontext.Context;
 
 import java.util.Stack;
 
-public final class ExitCommand extends Command {
+public final class ExitCommand extends AbstractSimpleCommand {
     public ExitCommand() {
-        super("exit");
+        super("exit", "Exit the program");
     }
 
     @Override
-    public void execute(Stack<Context> stack, String[] parameters) throws CommandException {
+    protected void execute(Stack<Context> stack) throws CommandException {
         stack.clear();
-    }
-
-    @Override
-    public String getDescription() {
-        return "Exit the program";
     }
 }

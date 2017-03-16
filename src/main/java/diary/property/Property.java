@@ -1,6 +1,6 @@
 package diary.property;
 
-public abstract class Property {
+public abstract class Property<T> {
     private final String name;
 
     public Property(String name) {
@@ -12,6 +12,10 @@ public abstract class Property {
     }
 
     public abstract String getType();
+
+    public abstract void setValue(T value);
+
+    public abstract T getValue();
 
     public abstract void setStringValue(String value) throws PropertyValueException;
 

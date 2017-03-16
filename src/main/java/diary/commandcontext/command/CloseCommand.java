@@ -4,18 +4,13 @@ import diary.commandcontext.Context;
 
 import java.util.Stack;
 
-public final class CloseCommand extends Command {
+public final class CloseCommand extends AbstractSimpleCommand {
     public CloseCommand() {
-        super("close");
+        super("close", "Close the current command context");
     }
 
     @Override
-    public void execute(Stack<Context> stack, String[] parameters) throws CommandException {
+    protected void execute(Stack<Context> stack) throws CommandException {
         stack.pop();
-    }
-
-    @Override
-    public String getDescription() {
-        return "Close the current command context";
     }
 }

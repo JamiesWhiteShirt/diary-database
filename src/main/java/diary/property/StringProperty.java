@@ -1,6 +1,6 @@
 package diary.property;
 
-public class StringProperty extends Property {
+public class StringProperty extends Property<String> {
     private String value;
 
     public StringProperty(String name, String value) {
@@ -8,10 +8,12 @@ public class StringProperty extends Property {
         this.value = value;
     }
 
+    @Override
     public String getValue() {
         return value;
     }
 
+    @Override
     public void setValue(String value) {
         this.value = value;
     }
