@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS completed_workout(
 	id					INTEGER		PRIMARY KEY AUTOINCREMENT,
-	time				DATETIME	NOT NULL,
+	time				TIMESTAMP	NOT NULL,
 	duration			INT			NOT NULL,
 	performance_rating	INT,
 	notes				TEXT
@@ -47,10 +47,9 @@ CREATE TABLE IF NOT EXISTS exercise(
 );
 
 CREATE TABLE IF NOT EXISTS completed_exercise(
-	id						INT				NOT NULL,
+	id						INT				PRIMARY KEY AUTOINCREMENT,
 	completed_workout_id	INT 			NOT NULL,
 	exercise_name			VARCHAR(50)		NOT NULL,
-	PRIMARY KEY (id, completed_workout_id),
 	FOREIGN KEY (completed_workout_id)
 		REFERENCES completed_workout(id)
 		ON UPDATE CASCADE,
@@ -59,27 +58,23 @@ CREATE TABLE IF NOT EXISTS completed_exercise(
 		ON UPDATE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS repetition_exercise(
-	completed_exercise_id	INT		NOT NULL,
-	completed_workout_id	INT		NOT NULL,
+CREATE TABLE IF NOT EXISTS repetition_completed_exercise(
+	completed_exercise_id	INT		PRIMARY KEY,
 	load					INT		NOT NULL,
 	reps					INT		NOT NULL,
 	sets					INT		NOT NULL,
-	PRIMARY KEY (completed_exercise_id, completed_workout_id),
-	FOREIGN KEY (completed_exercise_id, completed_workout_id)
-		REFERENCES completed_exercise(id, completed_workout_id)
+	FOREIGN KEY (completed_exercise_id)
+		REFERENCES completed_exercise(id)
 		ON UPDATE CASCADE
 		ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS endurance_completed_exercise(
-	completed_exercise_id	INT		NOT NULL,
-	completed_workout_id	INT		NOT NULL,
+	completed_exercise_id	INT		PRIMARY KEY,
 	length					INT,
 	duration				INT,
-	PRIMARY KEY (completed_exercise_id, completed_workout_id),
-	FOREIGN KEY (completed_exercise_id, completed_workout_id)
-		REFERENCES completed_exercise(id, completed_workout_id)
+	FOREIGN KEY (completed_exercise_id)
+		REFERENCES completed_exercise(id)
 		ON UPDATE CASCADE
 		ON DELETE CASCADE
 );
@@ -119,8 +114,8 @@ CREATE TABLE IF NOT EXISTS gps_info(
 CREATE TABLE IF NOT EXISTS goal_period(
     id              INTEGER         PRIMARY KEY AUTOINCREMENT,
     workout_name    VARCHAR(50)     NOT NULL,
-    from_time       DATETIME        NOT NULL,
-    to_time         DATETIME        NOT NULL,
+    from_time       TIMESTAMP       NOT NULL,
+    to_time         TIMESTAMP       NOT NULL,
     description     TEXT            NOT NULL,
     FOREIGN KEY (workout_name)
         REFERENCES workout(name)
