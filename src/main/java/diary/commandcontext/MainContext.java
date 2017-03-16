@@ -11,5 +11,11 @@ public class MainContext extends Context {
                 return new WorkoutsContext();
             }
         });
+        addCommand(new EnterContextCommand("exercises", "Access exercises") {
+            @Override
+            protected Context createContext() {
+                return new ExercisesContext();
+            }
+        });
     }
 }
