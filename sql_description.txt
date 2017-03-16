@@ -1,0 +1,15 @@
+Relasjonen "exercise_major_group" binder sammen "exercise" med "major_group", og er en mange-til-mange-relasjon. Der har vi i SQL-skriptet en statement som binder sammen en exercise med en major_group i en tabell. Denne tabellen vil da kunne ha mange rader, og således fungere som mange-til-mange-relasjonen mellom de to entity-ene.
+
+Relasjonen "exercise_goal_period" kobler én (og bare én) øvelse opp mot et visst antall (fra null til mange) mål. Dette er løst ved å lage en tabell for "goal_period" med en link til den gitte øvelsen som en foreign key.
+
+Relasjonen "replaceable_by", er en rekursiv relasjon, som vi i SQL-skriptet har representert med en tabell som binder to øvelser A og B sammen på en rad, kalt "exercise_replaceable_by".
+
+Relasjonen "completed_exercise_type" kobler instanser av øvelser, altså gjennomførte øvelser, til den generiske øvelsen. Det er i SQL-skriptet løst ved å ha en foreign key "exercise_name" i "completed_exercise"-tabellen som henviser til en øvelse "exercise". 
+
+Relasjonen "completed_workout_exercise" kobler minst én gjennomført øvelse til én-og-bare-én treningsøkt. Det gjøres i SQL-skriptet ved å ha en foreign key i hver "completed_exercise"-tabell som peker på en unik instans av "completed_workout".
+
+Relasjonen "completed_workout_gps_info" gjør at hver treningsøkt kan assosieres med en viss puls, tid og posisjon. I skriptet har vi en tabell kalt "gps_info", som linkes til en treningsøkt ved en foreign key "completed_workout_id". 
+
+Entity-ene "repetition_completed_exercise" og "endurance_completed_exercise" er subtyper av "completed_exercise", og inneholder hvert sitt sett med attributter. Hver av disse entity-ene er linket til en "completed_exercise_id", som deretter er linket til en "completed_workout_id".
+
+Entity-ene "outdoor_completed_workout" og "indoor_completed_workout" er subtyper av "completed_workout", og har hver sine attributter, og er linket til en treningsøkt med attributten "completed_workout_id".
