@@ -1,0 +1,53 @@
+1. 
+Registrere en treningsøkt med tilhørende data, dvs. med øvelser man har gjort, samt hvordan selve treningen har gått. 
+---
+Vi har laget en entity kalt "completed_workout", som inneholder alle nevnte attributter (id, tid, varighet, og med valgfri performance rating og notater). Den har en relasjon til entityen "completed exercise", som igjen er en instans av entityen "exercise", som beskriver en øvelse. "completed_exercise" kan enten være en repetisjonsøvelse, eller en utholdenhetsøvelse (men ikke begge), hver med sine attributter. I tillegg må "completed_workout" være enten en utendørs eller en innendørs økt, hver med sine attributter. "completed_workout" har også tilordnet en "gps_info"-entity, der brukeren kan legge inn puls, tid og posisjon.
+
+
+
+2.
+Lage/se oversikt over kjente treninger/øvelser, sette opp nye mål, og vite hvilke mål man har hatt. 
+---
+Dette kan gjøres ved å spørre databasen etter instanser av "completed_workout"/"exercise", og man kan legge til nye mål ved å benytte entityen "goal_period", som har en start- og en slutt-dato med mål til hver øvelse. Ved å spørre etter tidligere "goal_period" kan man også få ut de målene man tidligere har hatt.
+
+
+
+3.
+Se progresjon for en bestemt trening/øvelse over en periode, samt hvilke mål man har hatt.
+---
+Her kan det spørres etter tidligere instanser av "completed_workout"/"completed_exercise", og hente ut attributtene "load", "reps" og "sets" fra styrkeøvelsene, og "length" og "duration" fra utholdenhetsøktene. Det kan også benyttes spørring etter tidligere mål via "goal_period" for øvelsene som er brukt.
+
+
+
+4.
+Se differensen mellom et bestemt resultat og det beste resultatet i løpet av siste uke, måned eller tre måneder, samt forskjellen mellom det og målet som har vært aktivt i den siste perioden. 
+---
+Ved å loope gjennom alle instansene av samme øvelse i det gitte tidsrommet, finner vi det beste resultatet i perioden, og kan enkelt sammenligne med et bestemt resultat. Likeledes med målet for den aktuelle øvelsen i den gitte perioden.
+
+
+
+5.
+Kunne kopiere en bestemt treningsøkt over til en ny mal. Hver mal skal kunne registreres med et navn og kunne brukes til å registrere en ny treningsøkt. 
+---
+ER-modellen legger opp til at applikasjonslaget kan hente en "completed_workout" og kopiere den til en ny instans av en treningsøkt, der man lett kan nullstille/endre de gitte verdiene.
+
+
+
+6.
+Kunne hente ut puls- eller gps-data slik at det kan vises i et eksternt program, enten som en graf og/eller med kart.
+---
+Puls- og GPS-data kan enkelt hentes ut ved å spørre entityen "gps_info" etter verdiene i de gitte attributtene, slik at det deretter kan brukes av de eksterne programmene.
+
+
+
+7.
+Lese treningsnotater samlet i en logg.
+---
+Alle treningsnotater blir lagret som en verdi i "completed_workout"-entiteten, og kan etterspørres i rekkefølge herfra, og fremvises som en logg.
+
+
+
+8.
+Legge til, omorganisere og slette øvelser, grupper og delgrupper.
+---
+Det er uproblematisk å slette instanser av entity-ene som inneholder treningsøkter, øvelser, grupper og delgrupper. Dette tar applikasjonslaget seg av.
