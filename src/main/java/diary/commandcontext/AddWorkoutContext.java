@@ -12,14 +12,14 @@ import java.sql.*;
 import java.util.Date;
 import java.util.Stack;
 
-public class CreateWorkoutContext extends Context {
+public class AddWorkoutContext extends Context {
     private final AbstractProperty<Timestamp> time = new ValueProperty<>(Timestamp.class, "time", null);
     private final AbstractProperty<Integer> duration = new ValueProperty<>(Integer.class, "duration", null);
     private final AbstractProperty<Integer> performanceRating = new ValueProperty<>(Integer.class, "performanceRating", null);
     private final AbstractProperty<String> notes = new ValueProperty<>(String.class, "notes", null);
 
-    public CreateWorkoutContext() {
-        super("create");
+    public AddWorkoutContext() {
+        super("add");
         addProperty(new TimestampWrapperProperty(time));
         addProperty(new IntegerWrapperProperty(duration));
         addProperty(new IntegerWrapperProperty(performanceRating));
@@ -53,9 +53,11 @@ public class CreateWorkoutContext extends Context {
                     statement.executeUpdate();
                     ResultSet rs = statement.getGeneratedKeys();
                     rs.next();
+                    int id = rs.getInt(1);
 
-                    System.out.println("Created new workout with id " + rs.getInt(1));
+                    System.out.println("Created new workout with id " + id);
                     stack.pop();
+                    stack.push(new ViewWorkoutContext(id));
                 } catch (SQLException e) {
                     System.out.println(e.getMessage());
                 }

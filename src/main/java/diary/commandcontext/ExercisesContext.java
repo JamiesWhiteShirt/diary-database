@@ -3,6 +3,7 @@ package diary.commandcontext;
 import diary.Application;
 import diary.commandcontext.command.*;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -39,7 +40,21 @@ public class ExercisesContext extends Context {
             @Override
             public void execute(Stack<Context> stack, String[] parameters) throws CommandException {
                 if (parameters.length == 1) {
-                    stack.push(new ViewExerciseContext(parameters[0]));
+                    String name = parameters[0];
+                    try {
+                        PreparedStatement statement = Application.INSTANCE.getConnection().prepareStatement(
+                                "SELECT name FROM exercise WHERE name = ?"
+                        );
+                        statement.setString(1, name);
+                        ResultSet rs = statement.executeQuery();
+                        if (rs.next()) {
+                            stack.push(new ViewExerciseContext(name));
+                        } else {
+                            throw new CommandException("No exercise with name " + name);
+                        }
+                    } catch (SQLException e) {
+                        System.out.println(e.getMessage());
+                    }
                 } else {
                     throw new UnexpectedParametersException();
                 }

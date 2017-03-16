@@ -1,12 +1,9 @@
 package diary.commandcontext;
 
-import diary.ExerciseType;
 import diary.property.AbstractProperty;
-import diary.property.database.EnumDatabaseProperty;
 import diary.property.database.IntegerDatabaseProperty;
 import diary.property.database.StringDatabaseProperty;
 import diary.property.database.TimestampDatabaseProperty;
-import diary.property.wrapper.EnumWrapperProperty;
 import diary.property.wrapper.IntegerWrapperProperty;
 import diary.property.wrapper.TimestampWrapperProperty;
 

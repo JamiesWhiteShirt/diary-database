@@ -3,6 +3,7 @@ package diary.commandcontext;
 import diary.Application;
 import diary.commandcontext.command.*;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -31,21 +32,35 @@ public class WorkoutsContext extends Context {
                 }
             }
         });
-        addCommand(new EnterContextCommand("create", "Create a workout") {
+        addCommand(new EnterContextCommand("add", "Add a workout") {
             @Override
             protected Context createContext() throws CommandException {
-                return new CreateWorkoutContext();
+                return new AddWorkoutContext();
             }
         });
         addCommand(new Command("view", "view <id>") {
             @Override
             public void execute(Stack<Context> stack, String[] parameters) throws CommandException {
                 if (parameters.length == 1) {
+                    int id;
                     try {
-                        int id = Integer.parseInt(parameters[0]);
-                        stack.push(new ViewWorkoutContext(id));
+                        id = Integer.parseInt(parameters[0]);
                     } catch (NumberFormatException e) {
                         throw new CommandException("Not an integer");
+                    }
+                    try {
+                        PreparedStatement statement = Application.INSTANCE.getConnection().prepareStatement(
+                                "SELECT id FROM completed_workout WHERE id = ?"
+                        );
+                        statement.setInt(1, id);
+                        ResultSet rs = statement.executeQuery();
+                        if (rs.next()) {
+                            stack.push(new ViewWorkoutContext(id));
+                        } else {
+                            throw new CommandException("No workout with id " + id);
+                        }
+                    } catch (SQLException e) {
+                        System.out.println(e.getMessage());
                     }
                 } else {
                     throw new UnexpectedParametersException();
