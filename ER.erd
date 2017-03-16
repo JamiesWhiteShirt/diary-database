@@ -41,12 +41,7 @@
 <attribute is_hidden="false" is_key="false" name="duration?" type=""/>
 </attributes>
 </entity>
-<entity id="25" is_weak="true" name="minor_group" x="619" y="317">
-<attributes>
-<attribute is_hidden="false" is_key="true" name="name" type=""/>
-</attributes>
-</entity>
-<entity id="29" is_weak="false" name="major_group" x="613" y="165">
+<entity id="25" is_weak="false" name="major_group" x="617" y="310">
 <attributes>
 <attribute is_hidden="false" is_key="true" name="name" type=""/>
 </attributes>
@@ -66,10 +61,7 @@
 <attribute is_hidden="false" is_key="true" name="id" type=""/>
 </attributes>
 </entity>
-<diamond id="26" is_weak="false" name="exercise_group" x="656" y="409">
-<attributes/>
-</diamond>
-<diamond id="30" is_weak="true" name="minor_major_group" x="640" y="258">
+<diamond id="26" is_weak="false" name="exercise_major_group" x="635" y="409">
 <attributes/>
 </diamond>
 <diamond id="34" is_weak="true" name="completed_workout_gps_info" x="16" y="206">
@@ -107,16 +99,8 @@
 <connection connection_side="3" direction="1" object_id="4" relation_point_x="307" relation_point_y="100"/>
 </line>
 <line cardinality_string="(0,n)" has_u="false" id="28" is_weak="false" role="" style="0" turned="false">
-<connection connection_side="3" direction="1" object_id="25" relation_point_x="673" relation_point_y="370"/>
-<connection connection_side="1" direction="1" object_id="26" relation_point_x="672" relation_point_y="409"/>
-</line>
-<line cardinality_string="(1,n)" has_u="false" id="31" is_weak="false" role="" style="0" turned="false">
-<connection connection_side="3" direction="1" object_id="29" relation_point_x="662" relation_point_y="210"/>
-<connection connection_side="1" direction="1" object_id="30" relation_point_x="656" relation_point_y="258"/>
-</line>
-<line cardinality_string="(1,1)" has_u="false" id="32" is_weak="false" role="" style="0" turned="false">
-<connection connection_side="1" direction="1" object_id="25" relation_point_x="673" relation_point_y="317"/>
-<connection connection_side="3" direction="1" object_id="30" relation_point_x="656" relation_point_y="290"/>
+<connection connection_side="3" direction="1" object_id="25" relation_point_x="666" relation_point_y="355"/>
+<connection connection_side="1" direction="1" object_id="26" relation_point_x="651" relation_point_y="409"/>
 </line>
 <line cardinality_string="(0,n)" has_u="false" id="35" is_weak="false" role="" style="0" turned="false">
 <connection connection_side="0" direction="0" object_id="0" relation_point_x="236" relation_point_y="240"/>
@@ -148,7 +132,7 @@
 </line>
 <line cardinality_string="(0,n)" has_u="false" id="46" is_weak="false" role="" style="0" turned="false">
 <connection connection_side="2" direction="0" object_id="1" relation_point_x="577" relation_point_y="429"/>
-<connection connection_side="0" direction="0" object_id="26" relation_point_x="656" relation_point_y="425"/>
+<connection connection_side="0" direction="0" object_id="26" relation_point_x="635" relation_point_y="425"/>
 </line>
 <line cardinality_string="(1,1)" has_u="false" id="48" is_weak="false" role="" style="0" turned="false">
 <connection connection_side="1" direction="1" object_id="41" relation_point_x="350" relation_point_y="402"/>

@@ -85,29 +85,19 @@ CREATE TABLE IF NOT EXISTS endurance_completed_exercise(
 );
 
 CREATE TABLE IF NOT EXISTS major_group(
-	name	VARCHAR(50)		PRIMARY KEY
+	name				VARCHAR(50)		PRIMARY KEY
 );
 
-CREATE TABLE IF NOT EXISTS minor_group(
-	name				VARCHAR(50)		NOT NULL,
-	major_group_name	VARCHAR(50)		NOT NULL,
-	PRIMARY KEY (name, major_group_name),
-	FOREIGN KEY (major_group_name)
-		REFERENCES major_group(name)
-		ON UPDATE CASCADE
-);
-
-CREATE TABLE IF NOT EXISTS exercise_group(
+CREATE TABLE IF NOT EXISTS exercise_major_group(
 	exercise_name		VARCHAR(50)		NOT NULL,
-	minor_group_name	VARCHAR(50)		NOT NULL,
 	major_group_name	VARCHAR(50)		NOT NULL,
-	PRIMARY KEY (exercise_name, minor_group_name, major_group_name),
+	PRIMARY KEY (exercise_name, major_group_name),
 	FOREIGN KEY (exercise_name)
 		REFERENCES exercise(name)
 		ON UPDATE CASCADE
 		ON DELETE CASCADE,
-	FOREIGN KEY (minor_group_name, major_group_name)
-		REFERENCES minor_group(id, major_group_id)
+	FOREIGN KEY (major_group_name)
+		REFERENCES major_group(name)
 		ON UPDATE CASCADE
 		ON DELETE CASCADE
 );
