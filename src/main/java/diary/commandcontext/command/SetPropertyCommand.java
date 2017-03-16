@@ -1,7 +1,7 @@
 package diary.commandcontext.command;
 
 import diary.commandcontext.Context;
-import diary.property.Property;
+import diary.property.AbstractProperty;
 import diary.property.PropertyValueException;
 
 import java.util.Map;
@@ -9,9 +9,9 @@ import java.util.Stack;
 import java.util.stream.Collectors;
 
 public class SetPropertyCommand extends Command {
-    protected Map<String, Property> properties;
+    protected Map<String, AbstractProperty<String>> properties;
 
-    public SetPropertyCommand(Map<String, Property> properties) {
+    public SetPropertyCommand(Map<String, AbstractProperty<String>> properties) {
         super("set", "set <property> <value>...");
         this.properties = properties;
     }
@@ -20,7 +20,7 @@ public class SetPropertyCommand extends Command {
     public void execute(Stack<Context> stack, String[] parameters) throws CommandException {
         if (parameters.length >= 2) {
             String propertyName = parameters[0];
-            Property property = properties.get(propertyName.toLowerCase());
+            AbstractProperty<String> property = properties.get(propertyName.toLowerCase());
             if (property != null) {
                 String[] valueStrings = new String[parameters.length - 1];
                 System.arraycopy(parameters, 1, valueStrings, 0, valueStrings.length);
@@ -28,9 +28,9 @@ public class SetPropertyCommand extends Command {
 
                 try {
                     if (!"null".equalsIgnoreCase(valueString)) {
-                        property.setStringValue(valueString);
+                        property.setValue(valueString);
                     } else {
-                        property.setStringValue(null);
+                        property.setValue(null);
                     }
                 } catch (PropertyValueException e) {
                     throw new CommandException(e.getMessage() + " for property " + propertyName);
@@ -45,6 +45,6 @@ public class SetPropertyCommand extends Command {
 
     @Override
     public String getDescription() {
-        return "Set a property\n" + properties.values().stream().map(Property::getDescription).collect(Collectors.joining(", "));
+        return "Set a property\n" + properties.values().stream().map(AbstractProperty::getDescription).collect(Collectors.joining(", "));
     }
 }

@@ -1,7 +1,7 @@
 package diary.commandcontext;
 
 import diary.commandcontext.command.*;
-import diary.property.Property;
+import diary.property.AbstractProperty;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -10,7 +10,7 @@ import java.util.Stack;
 public abstract class Context {
     private final String name;
     private final Map<String, Command> commands = new HashMap<>();
-    private final Map<String, Property> properties = new HashMap<>();
+    private final Map<String, AbstractProperty<String>> properties = new HashMap<>();
 
     public Context(String name) {
         this.name = name;
@@ -29,7 +29,7 @@ public abstract class Context {
         commands.put(command.getName().toLowerCase(), command);
     }
 
-    protected final void addProperty(Property property) {
+    protected final void addProperty(AbstractProperty<String> property) {
         properties.put(property.getName().toLowerCase(), property);
     }
 

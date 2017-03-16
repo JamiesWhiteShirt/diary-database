@@ -1,6 +1,6 @@
 package diary.commandcontext.command;
 
-import diary.property.Property;
+import diary.property.AbstractProperty;
 import diary.commandcontext.Context;
 
 import java.util.Map;
@@ -8,9 +8,9 @@ import java.util.Stack;
 import java.util.stream.Collectors;
 
 public class GetPropertyCommand extends Command {
-    protected Map<String, Property> properties;
+    protected Map<String, AbstractProperty<String>> properties;
 
-    public GetPropertyCommand(Map<String, Property> properties) {
+    public GetPropertyCommand(Map<String, AbstractProperty<String>> properties) {
         super("get", "get [property]");
         this.properties = properties;
     }
@@ -19,7 +19,7 @@ public class GetPropertyCommand extends Command {
     public void execute(Stack<Context> context, String[] parameters) throws CommandException {
         if (parameters.length == 1) {
             String propertyName = parameters[0];
-            Property property = properties.get(propertyName.toLowerCase());
+            AbstractProperty<String> property = properties.get(propertyName.toLowerCase());
             if (property != null) {
                 System.out.println(property);
             } else {
@@ -34,6 +34,6 @@ public class GetPropertyCommand extends Command {
 
     @Override
     public String getDescription() {
-        return "Get a property\n" + properties.values().stream().map(Property::getDescription).collect(Collectors.joining(", "));
+        return "Get a property\n" + properties.values().stream().map(AbstractProperty::getDescription).collect(Collectors.joining(", "));
     }
 }

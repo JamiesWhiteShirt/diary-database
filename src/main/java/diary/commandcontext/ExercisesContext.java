@@ -1,9 +1,7 @@
 package diary.commandcontext;
 
 import diary.Application;
-import diary.commandcontext.command.AbstractSimpleCommand;
-import diary.commandcontext.command.CommandException;
-import diary.commandcontext.command.EnterContextCommand;
+import diary.commandcontext.command.*;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -35,6 +33,21 @@ public class ExercisesContext extends Context {
             @Override
             protected Context createContext() throws CommandException {
                 return new CreateExerciseContext();
+            }
+        });
+        addCommand(new Command("view", "view <name>") {
+            @Override
+            public void execute(Stack<Context> stack, String[] parameters) throws CommandException {
+                if (parameters.length == 1) {
+                    stack.push(new ViewExerciseContext(parameters[0]));
+                } else {
+                    throw new UnexpectedParametersException();
+                }
+            }
+
+            @Override
+            public String getDescription() {
+                return "View and edit a task";
             }
         });
     }

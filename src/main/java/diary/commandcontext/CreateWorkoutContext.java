@@ -3,34 +3,31 @@ package diary.commandcontext;
 import diary.Application;
 import diary.commandcontext.command.AbstractSimpleCommand;
 import diary.commandcontext.command.CommandException;
-import diary.property.DateProperty;
-import diary.property.IntegerProperty;
-import diary.property.Property;
-import diary.property.StringProperty;
+import diary.property.ValueProperty;
+import diary.property.wrapper.TimestampWrapperProperty;
+import diary.property.wrapper.IntegerWrapperProperty;
+import diary.property.AbstractProperty;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Types;
+import java.sql.*;
 import java.util.Date;
 import java.util.Stack;
 
 public class CreateWorkoutContext extends Context {
-    private final DateProperty date = new DateProperty("time", null);
-    private final IntegerProperty duration = new IntegerProperty("duration", null);
-    private final IntegerProperty performanceRating = new IntegerProperty("performanceRating", null);
-    private final StringProperty notes = new StringProperty("notes", null);
+    private final AbstractProperty<Timestamp> time = new ValueProperty<>(Timestamp.class, "time", null);
+    private final AbstractProperty<Integer> duration = new ValueProperty<>(Integer.class, "duration", null);
+    private final AbstractProperty<Integer> performanceRating = new ValueProperty<>(Integer.class, "performanceRating", null);
+    private final AbstractProperty<String> notes = new ValueProperty<>(String.class, "notes", null);
 
     public CreateWorkoutContext() {
         super("create");
-        addProperty(date);
-        addProperty(duration);
-        addProperty(performanceRating);
+        addProperty(new TimestampWrapperProperty(time));
+        addProperty(new IntegerWrapperProperty(duration));
+        addProperty(new IntegerWrapperProperty(performanceRating));
         addProperty(notes);
         addCommand(new AbstractSimpleCommand("commit", "Commit the workout to database") {
             @Override
             protected void execute(Stack<Context> stack) throws CommandException {
-                Date dateValue = assertValueNotNull(date);
+                Date timeValue = assertValueNotNull(time);
                 int durationValue = assertValueNotNull(duration);
                 Integer performanceRatingValue = performanceRating.getValue();
                 String notesValue = notes.getValue();
@@ -40,7 +37,7 @@ public class CreateWorkoutContext extends Context {
                             "(time, duration, performance_rating, notes) " +
                             "VALUES (?, ?, ?, ?)"
                     );
-                    statement.setDate(1, new java.sql.Date(dateValue.getTime()));
+                    statement.setDate(1, new java.sql.Date(timeValue.getTime()));
                     statement.setInt(2, durationValue);
                     if (performanceRatingValue != null) {
                         statement.setInt(3, performanceRatingValue);
@@ -64,7 +61,7 @@ public class CreateWorkoutContext extends Context {
                 }
             }
 
-            private <T> T assertValueNotNull(Property<T> property) throws CommandException {
+            private <T> T assertValueNotNull(AbstractProperty<T> property) throws CommandException {
                 T value = property.getValue();
                 if (value == null) {
                     throw new CommandException(property.getName() + " cannot be null");

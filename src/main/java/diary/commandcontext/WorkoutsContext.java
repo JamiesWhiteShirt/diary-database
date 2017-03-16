@@ -1,9 +1,7 @@
 package diary.commandcontext;
 
 import diary.Application;
-import diary.commandcontext.command.AbstractSimpleCommand;
-import diary.commandcontext.command.CommandException;
-import diary.commandcontext.command.EnterContextCommand;
+import diary.commandcontext.command.*;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -22,7 +20,7 @@ public class WorkoutsContext extends Context {
                     while (resultSet.next()) {
                         System.out.println(
                                 resultSet.getInt("id") + " " +
-                                resultSet.getDate("time") + " " +
+                                resultSet.getTimestamp("time") + " " +
                                 resultSet.getInt("duration") + " " +
                                 resultSet.getInt("performance_rating") + " " +
                                 resultSet.getString("notes")
@@ -37,6 +35,26 @@ public class WorkoutsContext extends Context {
             @Override
             protected Context createContext() throws CommandException {
                 return new CreateWorkoutContext();
+            }
+        });
+        addCommand(new Command("view", "view <id>") {
+            @Override
+            public void execute(Stack<Context> stack, String[] parameters) throws CommandException {
+                if (parameters.length == 1) {
+                    try {
+                        int id = Integer.parseInt(parameters[0]);
+                        stack.push(new ViewWorkoutContext(id));
+                    } catch (NumberFormatException e) {
+                        throw new CommandException("Not an integer");
+                    }
+                } else {
+                    throw new UnexpectedParametersException();
+                }
+            }
+
+            @Override
+            public String getDescription() {
+                return "View and edit a workout";
             }
         });
     }
