@@ -1,7 +1,7 @@
 package diary;
 
-import diary.commandcontext.Context;
-import diary.commandcontext.MainContext;
+import diary.lib.context.Context;
+import diary.contexts.MainContext;
 
 import java.sql.*;
 import java.util.Scanner;

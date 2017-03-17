@@ -47,7 +47,7 @@ CREATE TABLE IF NOT EXISTS exercise(
 );
 
 CREATE TABLE IF NOT EXISTS completed_exercise(
-	id						INT				PRIMARY KEY AUTOINCREMENT,
+	id						INTEGER			PRIMARY KEY AUTOINCREMENT,
 	completed_workout_id	INT 			NOT NULL,
 	exercise_name			VARCHAR(50)		NOT NULL,
 	FOREIGN KEY (completed_workout_id)
