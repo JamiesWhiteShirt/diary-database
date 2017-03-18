@@ -7,13 +7,12 @@ import diary.lib.context.command.AbstractSimpleCommand;
 import diary.lib.context.command.CommandException;
 import diary.lib.property.AbstractProperty;
 import diary.lib.property.ValueProperty;
-import diary.lib.property.wrapper.EnumWrapperProperty;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Stack;
 
-public class CreateExerciseContext extends Context {
+/*public class CreateExerciseContext extends Context {
     private final AbstractProperty<String> name = new ValueProperty<>(String.class, "name", null);
     private final AbstractProperty<String> description = new ValueProperty<>(String.class, "description", null);
     private final AbstractProperty<ExerciseType> type = new ValueProperty<>(ExerciseType.class, "type", null);
@@ -57,4 +56,4 @@ public class CreateExerciseContext extends Context {
             }
         });
     }
-}
+}*/

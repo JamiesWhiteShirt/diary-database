@@ -1,12 +1,12 @@
 package diary.contexts;
 
+/*import diary.lib.StringMapper;
 import diary.lib.context.Context;
+import diary.lib.property.StringMappedProperty;
 import diary.tables.WorkoutTable;
 import diary.lib.database.Table;
 import diary.lib.property.AbstractProperty;
 import diary.lib.property.database.BoundColumnProperty;
-import diary.lib.property.wrapper.IntegerWrapperProperty;
-import diary.lib.property.wrapper.TimestampWrapperProperty;
 
 import java.sql.Timestamp;
 import java.util.Collections;
@@ -16,15 +16,15 @@ public class ViewWorkoutContext extends Context {
     public ViewWorkoutContext(WorkoutTable table, int id) {
         super("view " + id);
 
-        List<Table.Column.Property> where = Collections.singletonList(table.getId().property(id));
-        AbstractProperty<Timestamp> time = new BoundColumnProperty<>("time", table.getTime(), where);
-        AbstractProperty<Integer> duration = new BoundColumnProperty<>("duration", table.getDuration(), where);
-        AbstractProperty<Integer> performanceRating = new BoundColumnProperty<>("performanceRating", table.getPerformanceRating(), where);
-        AbstractProperty<String> notes = new BoundColumnProperty<>("notes", table.getNotes(), where);
+        List<Table.Column.Property> where = Collections.singletonList(table.id.property(id));
+        AbstractProperty<Timestamp> time = new BoundColumnProperty<>("time", table.time, where);
+        AbstractProperty<Integer> duration = new BoundColumnProperty<>("duration", table.duration, where);
+        AbstractProperty<Integer> performanceRating = new BoundColumnProperty<>("performanceRating", table.performanceRating, where);
+        AbstractProperty<String> notes = new BoundColumnProperty<>("notes", table.notes, where);
 
-        addProperty(new TimestampWrapperProperty(time));
-        addProperty(new IntegerWrapperProperty(duration));
-        addProperty(new IntegerWrapperProperty(performanceRating));
+        addProperty(new StringMappedProperty<>(time, StringMapper.TIMESTAMP));
+        addProperty(new StringMappedProperty<>(duration, StringMapper.INTEGER));
+        addProperty(new StringMappedProperty<>(performanceRating, StringMapper.INTEGER));
         addProperty(notes);
     }
-}
+}*/

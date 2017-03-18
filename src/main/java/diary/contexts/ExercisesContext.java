@@ -1,62 +1,53 @@
 package diary.contexts;
 
 import diary.Application;
-import diary.contexts.CreateExerciseContext;
 import diary.lib.context.Context;
 import diary.lib.context.command.*;
+import diary.lib.database.DatabaseException;
+import diary.lib.database.Table;
+import diary.tables.ExerciseTable;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Stack;
+import java.util.stream.Collectors;
 
 public class ExercisesContext extends Context {
-    public ExercisesContext() {
+    public ExercisesContext(ExerciseTable table) {
         super("exercises");
-        addCommand(new AbstractSimpleCommand("list", "List all exercises") {
+        /*addCommand(new AbstractSimpleCommand("list", "List all exercises") {
             @Override
             protected void execute(Stack<Context> stack) throws CommandException {
+                Table.Column<String>.Property name = table.name.property();
+                Table.Column<String>.Property description = table.description.property();
+                Table.Column<String>.Property type = table.type.property();
+
+                List<Table.Column.Property> get = Arrays.asList(name, description, type);
+
                 try {
-                    Statement statement = Application.INSTANCE.getConnection().createStatement();
-                    ResultSet resultSet = statement.executeQuery("SELECT * FROM exercise");
+                    Table.ResultSet resultSet = table.select(get, Collections.emptyList());
                     while (resultSet.next()) {
-                        System.out.println(
-                                resultSet.getString("name") + " " +
-                                resultSet.getString("description") + " " +
-                                resultSet.getString("type")
-                        );
+                        System.out.println(get.stream().map(Table.Column.Property::getValue).map(it -> it != null ? it.toString() : "null").collect(Collectors.joining(" ")));
                     }
-                } catch (SQLException e) {
+                } catch (DatabaseException e) {
                     System.out.println(e.getMessage());
                 }
             }
-        });
-        addCommand(new EnterContextCommand("create", "Create an exercise") {
+        });*/
+        /*addCommand(new EnterContextCommand("create", "Create an exercise") {
             @Override
             protected Context createContext() throws CommandException {
-                return new CreateExerciseContext();
+                return new CreateExerciseContext(table);
             }
         });
         addCommand(new Command("view", "view <name>") {
             @Override
             public void execute(Stack<Context> stack, String[] parameters) throws CommandException {
                 if (parameters.length == 1) {
-                    String name = parameters[0];
-                    try {
-                        PreparedStatement statement = Application.INSTANCE.getConnection().prepareStatement(
-                                "SELECT name FROM exercise WHERE name = ?"
-                        );
-                        statement.setString(1, name);
-                        ResultSet rs = statement.executeQuery();
-                        if (rs.next()) {
-                            stack.push(new ViewExerciseContext(name));
-                        } else {
-                            throw new CommandException("No exercise with name " + name);
-                        }
-                    } catch (SQLException e) {
-                        System.out.println(e.getMessage());
-                    }
                 } else {
                     throw new UnexpectedParametersException();
                 }
@@ -64,8 +55,8 @@ public class ExercisesContext extends Context {
 
             @Override
             public String getDescription() {
-                return "View and edit a task";
+                return "View and edit an exercise";
             }
-        });
+        });*/
     }
 }

@@ -1,6 +1,6 @@
 package diary.lib.property.database;
 
-import diary.lib.database.Table;
+/*import diary.lib.database.Table;
 import diary.lib.property.AbstractProperty;
 import diary.lib.property.PropertyValueException;
 
@@ -21,4 +21,4 @@ public class ColumnProperty<T> extends AbstractProperty<T> {
     public T getValue() {
         return property.getValue();
     }
-}
+}*/
