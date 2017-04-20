@@ -31,7 +31,7 @@ public abstract class StringMapper<T> {
             try {
                 return new Timestamp(dateFormat.parse(string).getTime());
             } catch (ParseException e) {
-                throw new StringMapperException(e.getMessage());
+                throw new StringMapperException("Timestamp must be in the format dd.MM.yyyy HH:mm");
             }
         }
 
