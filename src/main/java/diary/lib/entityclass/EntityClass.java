@@ -205,12 +205,22 @@ public abstract class EntityClass<KeyType> {
         }
     }
 
-    public final void update(TableDatabaseEngine engine, List<TableBinding.Attribute<?>.Value> values, KeyType key) throws EntityException {
+    public final boolean update(TableDatabaseEngine engine, List<TableBinding.Attribute<?>.Value> values, KeyType key) throws EntityException {
         try {
             PrimaryTableBinding primaryTableBinding = getPrimaryTableBinding();
             List<Table.Column<?>.Value> valueColumnValues = values.stream().map(this::getAttributeValueColumnValue).collect(Collectors.toList());
             Table.Column<?>.Value whereColumn = primaryTableBinding.getKey().value(key).getColumnValue();
-            engine.update(primaryTableBinding.getTable(), valueColumnValues, Collections.singletonList(whereColumn));
+            return engine.update(primaryTableBinding.getTable(), valueColumnValues, Collections.singletonList(whereColumn)) > 0;
+        } catch (DatabaseException e) {
+            throw new EntityException(e.getMessage());
+        }
+    }
+
+    public final boolean delete(TableDatabaseEngine engine, KeyType key) throws EntityException {
+        try {
+            PrimaryTableBinding primaryTableBinding = getPrimaryTableBinding();
+            Table.Column<?>.Value whereColumn = primaryTableBinding.getKey().value(key).getColumnValue();
+            return engine.delete(primaryTableBinding.getTable(), Collections.singletonList(whereColumn)) > 0;
         } catch (DatabaseException e) {
             throw new EntityException(e.getMessage());
         }

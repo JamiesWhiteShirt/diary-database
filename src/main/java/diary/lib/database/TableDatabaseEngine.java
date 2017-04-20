@@ -107,6 +107,24 @@ public final class TableDatabaseEngine {
         }
     }
 
+    public final int delete(Table table, List<Table.Column<?>.Value> where) throws DatabaseException {
+        try {
+            String statementString = withWhere("DELETE FROM " + table.getName(), where);
+            System.out.println(statementString);
+            PreparedStatement statement = connection.prepareStatement(statementString);
+            int parameterIndex = 1;
+            for (Table.Column.Value value : where) {
+                value.prepare(statement, parameterIndex++);
+            }
+            statement.execute();
+            int result = statement.getUpdateCount();
+            statement.close();
+            return result;
+        } catch (SQLException e) {
+            throw new DatabaseException(e.getMessage());
+        }
+    }
+
     public final ResultSet insert(Table table, List<Table.Column<?>.Value> values, List<Table.Column<?>.Value> generated) throws DatabaseException {
         try {
             String valuesString = values.stream().map(value -> "?").collect(Collectors.joining(", "));

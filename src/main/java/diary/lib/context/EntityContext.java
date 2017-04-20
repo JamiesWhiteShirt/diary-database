@@ -6,6 +6,7 @@ import diary.lib.entityclass.EntityClass;
 import diary.lib.entityclass.EntityException;
 import diary.lib.property.StringMapperException;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Stack;
 import java.util.stream.Collectors;
@@ -56,6 +57,34 @@ public class EntityContext<T> extends Context {
             @Override
             public String getDescription() {
                 return "View and edit an instance of " + entityClass.getName();
+            }
+        });
+        addCommand(new Command("delete", "delete <id>") {
+            @Override
+            public void execute(Stack<Context> stack, String[] parameters) throws CommandException {
+                if (parameters.length == 1) {
+                    EntityClass<T>.TableBinding.Attribute<T> keyAttribute = entityClass.getKeyAttribute();
+                    T key;
+                    try {
+                        key = keyAttribute.getStringMapper().fromString(parameters[0]);
+                    } catch (StringMapperException e) {
+                        throw new CommandException(e.getMessage());
+                    }
+                    try {
+                        if (!entityClass.delete(engine, key)) {
+                            throw new CommandException("Invalid id");
+                        }
+                    } catch (EntityException e) {
+                        throw new CommandException(e.getMessage());
+                    }
+                } else {
+                    throw new UnexpectedParametersException();
+                }
+            }
+
+            @Override
+            public String getDescription() {
+                return "Delete an instance of " + entityClass.getName();
             }
         });
         addCommand(new EnterContextCommand("create", "Create a new " + entityClass.getName()) {
