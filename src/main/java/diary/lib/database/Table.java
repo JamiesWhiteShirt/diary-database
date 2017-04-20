@@ -5,12 +5,12 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class Table<TableType extends Table> {
+public abstract class Table {
     public final class Column<Type> {
-        public final class Property {
+        public final class Value {
             private Type value;
 
-            private Property(Type value) {
+            private Value(Type value) {
                 this.value = value;
             }
 
@@ -47,7 +47,7 @@ public abstract class Table<TableType extends Table> {
 
         private final String name;
         private final DataType<Type> dataType;
-        private Nullability nullability;
+        private final Nullability nullability;
 
         public Column(String name, DataType<Type> dataType, Nullability nullability) {
             this.name = name;
@@ -63,12 +63,12 @@ public abstract class Table<TableType extends Table> {
             return dataType;
         }
 
-        public Property property(Type value) {
-            return new Property(value);
+        public Value value(Type value) {
+            return new Value(value);
         }
 
-        public Property property() {
-            return property(null);
+        public Value value() {
+            return value(null);
         }
 
         public String getEqualsCondition() {

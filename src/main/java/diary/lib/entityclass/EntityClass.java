@@ -10,14 +10,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public abstract class EntityClass<T> {
-    public abstract class TableBinding<TableType extends Table> {
+public abstract class EntityClass<KeyType> {
+    public abstract class TableBinding {
         public final class Attribute<Type> {
-            public final class Property {
-                private final Table<TableType>.Column<Type>.Property columnProperty;
+            public final class Value {
+                private final Table.Column<Type>.Value columnValue;
 
-                private Property(Type value) {
-                    columnProperty = getColumn().property(value);
+                private Value(Type value) {
+                    columnValue = getColumn().value(value);
                 }
 
                 public Attribute getAttribute() {
@@ -25,15 +25,15 @@ public abstract class EntityClass<T> {
                 }
 
                 public Type getValue() {
-                    return columnProperty.getValue();
+                    return columnValue.getValue();
                 }
 
                 public void setValue(Type value) {
-                    columnProperty.setValue(value);
+                    columnValue.setValue(value);
                 }
 
-                private Table<TableType>.Column<Type>.Property getColumnProperty() {
-                    return columnProperty;
+                private Table.Column<Type>.Value getColumnValue() {
+                    return columnValue;
                 }
 
                 public String getStringValue() {
@@ -46,17 +46,17 @@ public abstract class EntityClass<T> {
                 }
             }
 
-            private final Table<TableType>.Column<Type> column;
+            private final Table.Column<Type> column;
             private final StringMapper<Type> stringMapper;
             private final boolean isGenerated;
 
-            public Attribute(Table<TableType>.Column<Type> column, StringMapper<Type> stringMapper, boolean isGenerated) {
+            public Attribute(Table.Column<Type> column, StringMapper<Type> stringMapper, boolean isGenerated) {
                 this.column = column;
                 this.stringMapper = stringMapper;
                 this.isGenerated = isGenerated;
             }
 
-            public Table<TableType>.Column<Type> getColumn() {
+            public Table.Column<Type> getColumn() {
                 return column;
             }
 
@@ -68,27 +68,35 @@ public abstract class EntityClass<T> {
                 return isGenerated;
             }
 
-            public Property property(Type value) {
-                return new Property(value);
+            public String getName() {
+                return getColumn().getName();
             }
 
-            public Property property() {
-                return property(null);
+            public Class<Type> getType() {
+                return getColumn().getDataType().getType();
+            }
+
+            public Value value(Type value) {
+                return new Value(value);
+            }
+
+            public Value value() {
+                return value(null);
             }
         }
 
-        private final TableType table;
-        private List<Attribute> attributes = new ArrayList<>();
+        private final Table table;
+        private List<Attribute<?>> attributes = new ArrayList<>();
 
-        private TableBinding(TableType table) {
+        private TableBinding(Table table) {
             this.table = table;
         }
 
-        public final TableType getTable() {
+        public final Table getTable() {
             return table;
         }
 
-        public List<Attribute> getAttributes() {
+        public List<Attribute<?>> getAttributes() {
             return attributes;
         }
 
@@ -97,23 +105,17 @@ public abstract class EntityClass<T> {
         }
     }
 
-    public abstract class PrimaryTableBinding<TableType extends Table, KeyType> extends TableBinding<TableType> {
-        public PrimaryTableBinding(TableType table) {
+    public abstract class PrimaryTableBinding extends TableBinding {
+        public PrimaryTableBinding(Table table) {
             super(table);
         }
 
-        public abstract Attribute getKey();
+        public abstract Attribute<KeyType> getKey();
+    }
 
-        public final ResultSet select(TableDatabaseEngine engine, List<Attribute.Property> get) throws EntityException {
-            try {
-                TableType table = getTable();
-                List<Table.Column.Property> getColumns = get.stream().map(TableBinding.Attribute.Property::getColumnProperty).collect(Collectors.toList());
-                List<Table.Column.Property> whereColumns = Collections.emptyList();
-                TableDatabaseEngine.ResultSet resultSet = engine.select(table, getColumns, whereColumns);
-                return new ResultSet(resultSet);
-            } catch (DatabaseException e) {
-                throw new EntityException(e.getMessage());
-            }
+    public abstract class JoinTableBinding extends TableBinding {
+        public JoinTableBinding(Table table) {
+            super(table);
         }
     }
 
@@ -133,5 +135,84 @@ public abstract class EntityClass<T> {
         }
     }
 
-    public abstract PrimaryTableBinding<?, T> getPrimaryTableBinding();
+    private final String name;
+
+    public EntityClass(String name) {
+        this.name = name;
+    }
+
+    public final String getName() {
+        return name;
+    }
+
+    protected abstract PrimaryTableBinding getPrimaryTableBinding();
+
+    private Table.Column<?>.Value getAttributeValueColumnValue(TableBinding.Attribute<?>.Value attributeValue) {
+        return attributeValue.getColumnValue();
+    }
+
+    public final TableBinding.Attribute<KeyType> getKeyAttribute() {
+        return getPrimaryTableBinding().getKey();
+    }
+
+    public final List<TableBinding.Attribute<?>> getAttributes() {
+        return getPrimaryTableBinding().getAttributes();
+    }
+
+    public final List<TableBinding.Attribute<?>.Value> getAttributeValues() {
+        return getAttributes().stream().map(EntityClass.TableBinding.Attribute::value).collect(Collectors.toList());
+    }
+
+    public final List<TableBinding.Attribute<?>> getNonGeneratedAttributes() {
+        return getAttributes().stream().filter(attribute -> !attribute.isGenerated()).collect(Collectors.toList());
+    }
+
+    public final List<TableBinding.Attribute<?>.Value> getNonGeneratedAttributeValues() {
+        return getNonGeneratedAttributes().stream().map(EntityClass.TableBinding.Attribute::value).collect(Collectors.toList());
+    }
+
+    public final ResultSet select(TableDatabaseEngine engine, List<TableBinding.Attribute<?>.Value> get) throws EntityException {
+        try {
+            PrimaryTableBinding primaryTableBinding = getPrimaryTableBinding();
+            List<Table.Column<?>.Value> getColumns = get.stream().map(this::getAttributeValueColumnValue).collect(Collectors.toList());
+            TableDatabaseEngine.ResultSet resultSet = engine.select(primaryTableBinding.getTable(), getColumns, Collections.emptyList());
+            return new ResultSet(resultSet);
+        } catch (DatabaseException e) {
+            throw new EntityException(e.getMessage());
+        }
+    }
+
+    public final ResultSet select(TableDatabaseEngine engine, List<TableBinding.Attribute<?>.Value> get, KeyType key) throws EntityException {
+        try {
+            PrimaryTableBinding primaryTableBinding = getPrimaryTableBinding();
+            List<Table.Column<?>.Value> getColumns = get.stream().map(this::getAttributeValueColumnValue).collect(Collectors.toList());
+            Table.Column<?>.Value whereColumn = primaryTableBinding.getKey().value(key).getColumnValue();
+            TableDatabaseEngine.ResultSet resultSet = engine.select(primaryTableBinding.getTable(), getColumns, Collections.singletonList(whereColumn));
+            return new ResultSet(resultSet);
+        } catch (DatabaseException e) {
+            throw new EntityException(e.getMessage());
+        }
+    }
+
+    public final ResultSet insert(TableDatabaseEngine engine, List<TableBinding.Attribute<?>.Value> values, List<TableBinding.Attribute<?>.Value> generated) throws EntityException {
+        try {
+            List<Table.Column<?>.Value> valueColumnValues = values.stream().map(this::getAttributeValueColumnValue).collect(Collectors.toList());
+            List<Table.Column<?>.Value> generatedColumnValues = generated.stream().map(this::getAttributeValueColumnValue).collect(Collectors.toList());
+            TableDatabaseEngine.ResultSet resultSet = engine.insert(getPrimaryTableBinding().getTable(), valueColumnValues, generatedColumnValues);
+            return new ResultSet(resultSet);
+        } catch (DatabaseException e) {
+            throw new EntityException(e.getMessage());
+        }
+    }
+
+    public final void update(TableDatabaseEngine engine, List<TableBinding.Attribute<?>.Value> values, KeyType key) throws EntityException {
+        try {
+            PrimaryTableBinding primaryTableBinding = getPrimaryTableBinding();
+            List<Table.Column<?>.Value> valueColumnValues = values.stream().map(this::getAttributeValueColumnValue).collect(Collectors.toList());
+            Table.Column<?>.Value whereColumn = primaryTableBinding.getKey().value(key).getColumnValue();
+            engine.update(primaryTableBinding.getTable(), valueColumnValues, Collections.singletonList(whereColumn));
+        } catch (DatabaseException e) {
+            throw new EntityException(e.getMessage());
+        }
+    }
 }

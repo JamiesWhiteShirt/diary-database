@@ -16,7 +16,7 @@ public class MainContext extends Context {
         addCommand(new EnterContextCommand("workouts", "workouts") {
             @Override
             protected Context createContext() throws CommandException {
-                return new EntityContext<>("workouts", new TableDatabaseEngine(Application.INSTANCE.getConnection()), new WorkoutEntityClass(new WorkoutTable()));
+                return new EntityContext<>(new TableDatabaseEngine(Application.INSTANCE.getConnection()), new WorkoutEntityClass(new WorkoutTable()));
             }
         });
         /*addCommand(new EnterContextCommand("workouts", "Access workouts") {

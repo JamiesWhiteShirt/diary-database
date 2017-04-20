@@ -6,7 +6,7 @@ import diary.lib.database.DataType;
 
 import java.sql.Timestamp;
 
-public class WorkoutTable extends Table<WorkoutTable> {
+public class WorkoutTable extends Table {
     public final Column<Integer> id = new Column<>("id", DataType.INTEGER, Nullability.NOT_NULL);
     public final Column<Timestamp> time = new Column<>("time", DataType.TIMESTAMP, Nullability.NOT_NULL);
     public final Column<Integer> duration = new Column<>("duration", DataType.INTEGER, Nullability.NOT_NULL);

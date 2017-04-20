@@ -10,7 +10,11 @@ public abstract class StringMapper<T> {
     public static final StringMapper<Integer> INTEGER = new StringMapper<Integer>() {
         @Override
         public Integer fromString(String string) throws StringMapperException {
-            return Integer.valueOf(string);
+            try {
+                return Integer.valueOf(string);
+            } catch (NumberFormatException e) {
+                throw new StringMapperException("Invalid number format");
+            }
         }
 
         @Override
